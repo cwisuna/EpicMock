@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace EpicMock.Models;
+
+public partial class Room
+{
+    public int RoomId { get; set; }
+
+    public string RoomName { get; set; } = null!;
+
+    public string? RoomType { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+}
