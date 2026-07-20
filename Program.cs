@@ -1,6 +1,9 @@
 using EpicMock.Data;
 using Microsoft.EntityFrameworkCore;
 
+//Manually hash a password for testing. ***REMOVE LATER****
+Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("TestPassword123!"));
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
