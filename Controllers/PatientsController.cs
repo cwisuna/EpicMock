@@ -30,7 +30,7 @@ namespace EpicMock.Controllers
             var patient = await context.Patients.FindAsync(id);
             if (patient == null || !patient.IsActive)
             {
-                return NotFound($"Patient with ID {id} not found.");
+                return NotFound($"Patient with ID:{id} not found.");
             }
             return Ok(patient);
         }
@@ -41,7 +41,7 @@ namespace EpicMock.Controllers
             var mRnExists = await context.Patients.AnyAsync(p => p.Mrn == dto.Mrn);
             if(mRnExists)
             {
-                return Conflict($"A patient with MRN {dto.Mrn} already exists.");
+                return Conflict($"A patient with MRN:{dto.Mrn} already exists.");
             }
 
             var createdPatient = new Patient
@@ -65,6 +65,51 @@ namespace EpicMock.Controllers
             context.Patients.Add(createdPatient);
             await context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetPatientById), new { id = createdPatient.PatientId }, createdPatient);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePatient(int id, PatientUpdateDTO dto)
+        {
+            var patient = await context.Patients.FindAsync(id);
+            if (patient == null || !patient.IsActive)
+            {
+                return NotFound($"Patient with ID:{id} not found.");
+            }
+
+            patient.FirstName = dto.FirstName;
+            patient.LastName = dto.LastName;
+            patient.DateOfBirth = dto.DateOfBirth;
+            patient.Sex = dto.Sex;
+            patient.Phone = dto.Phone;
+            patient.Email = dto.Email;
+            patient.AddressLine1 = dto.AddressLine1;
+            patient.City = dto.City;
+            patient.State = dto.State;
+            patient.ZipCode = dto.ZipCode;
+            patient.InsuranceProvider = dto.InsuranceProvider;
+            patient.InsurancePolicyNo = dto.InsurancePolicyNo;
+            patient.UpdatedAt = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+
+            return Ok(patient);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePatient(int id)
+        {
+            var patient = await context.Patients.FindAsync(id);
+            if (patient == null || !patient.IsActive)
+            {
+                return NotFound($"Patient with ID:{id} not found.");
+            }
+
+            patient.IsActive = false;
+            patient.UpdatedAt = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
